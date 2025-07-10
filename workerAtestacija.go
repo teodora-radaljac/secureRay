@@ -16,7 +16,7 @@ import (
 	"net"
 	"os"
 	"time"
-
+	"flag"
 	"github.com/google/go-sev-guest/abi"
 	"github.com/google/go-sev-guest/client"
 )
@@ -24,6 +24,18 @@ import (
 var nsCommentOID = asn1.ObjectIdentifier{2, 16, 840, 1, 113730, 1, 13}
 var attestationOID = asn1.ObjectIdentifier{1, 2, 3, 4, 5, 6, 7, 8, 1}
 
+var headAddr *string
+var workerIP *string
+
+func init() {
+	headAddr = flag.String("head", "", "IP adresa i port head noda (npr. 192.168.1.100:4433)")
+	workerIP = flag.String("worker", "", "IP adresa worker noda (npr. 192.168.1.10)")
+	flag.Parse()
+
+	if *headAddr == "" || *workerIP == "" {
+		log.Fatal("Morate navesti --head IP:port i --worker IP")
+	}
+}
 func decodeNonceFromAcceptableCAs(acceptableCAs [][]byte) ([]byte, error) {
 	if len(acceptableCAs) == 0 {
 		return nil, fmt.Errorf("no AcceptableCAs")
@@ -85,7 +97,7 @@ func AddAttestation(nonce []byte) ([]byte, error) {
 func main() {
 
 	//addr := "127.0.0.1:4433"
-	addr := "147.91.12.238:2300"
+	addr :=  *headAddr
 	var savedKey *rsa.PrivateKey
 	//handskaje
 	tlsConfig := &tls.Config{
@@ -184,7 +196,7 @@ func main() {
 	csrDER, err := x509.CreateCertificateRequest(rand.Reader, &x509.CertificateRequest{
 		Subject:     subj,
 		DNSNames:    []string{"localhost", "service-ray-head.default.svc.cluster.local"},
-		IPAddresses: []net.IP{net.ParseIP("127.0.0.1"), net.ParseIP("192.168.100.3")},
+		IPAddresses: []net.IP{net.ParseIP("127.0.0.1"), net.ParseIP(*workerIP)},
 	}, savedKey)
 	check(err)
 
