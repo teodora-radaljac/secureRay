@@ -28,7 +28,7 @@ var headAddr *string
 var workerIP *string
 
 func init() {
-	headAddr = flag.String("head", "", "IP adresa i port head noda (npr. 192.168.1.100:4433)")
+	headAddr = flag.String("verificator ", "", "IP adresa i port verificator noda (npr. 192.168.1.100:4433)")
 	workerIP = flag.String("worker", "", "IP adresa worker noda (npr. 192.168.1.10)")
 	flag.Parse()
 
