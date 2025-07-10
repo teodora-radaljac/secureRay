@@ -9,13 +9,26 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"log"
+	"flag"
 	"net"
 	"os"
 )
+var headAddr *string
+var workerIP *string
 
+func init() {
+	verificatorAddr = flag.String("verificator ", "", "IP adresa i port verificator noda (npr. 192.168.1.100:4433)")
+	headIP = flag.String("head", "", "IP adresa head noda (npr. 192.168.1.10)")
+	flag.Parse()
+
+	if *headAddr == "" || *workerIP == "" {
+		log.Fatal("Morate navesti --head IP:port i --worker IP")
+	}
+}
 func main() {
 	//	addr := "127.0.0.1:4444"
-	addr := "147.91.12.238:2301"
+	//addr := "147.91.12.238:2301"
+	addr := *verificatorAddr 
 	// Kljuc
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	check(err)
@@ -36,7 +49,7 @@ func main() {
 	csrDER, err := x509.CreateCertificateRequest(rand.Reader, &x509.CertificateRequest{
 		Subject:     subj,
 		DNSNames:    []string{"localhost", "service-ray-head.default.svc.cluster.local"},
-		IPAddresses: []net.IP{net.ParseIP("127.0.0.1"), net.ParseIP("192.168.100.2")},
+		IPAddresses: []net.IP{net.ParseIP("127.0.0.1"), net.ParseIP(*headIP)},
 	}, key)
 	check(err)
 
