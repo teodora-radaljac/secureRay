@@ -1,0 +1,20 @@
+{
+  "policy": {
+    "policy": 196608,
+    "minimum_build": 8,
+    "minimum_version": "1.55",
+    "permit_provisional_firmware": true,
+    "require_author_key": false,
+    "require_id_block": false,
+    "report_id_ma": "//////////////////////////////////////////8=",
+    "product" : {
+      "name" : 1
+    }
+  },
+  "root_of_trust": {
+    "check_crl": false,
+    "disallow_network": true,
+    "product": "Milan",
+    "product_line": "Milan"
+  }
+}
