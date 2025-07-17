@@ -1,15 +1,17 @@
 .PHONY: all head verification worker clean
-all: head verification worker
+all: dirs head verification worker
 
-head:
+dirs:
+	mkdir -p head verification worker
+head: dirs
 	cd head && go build -o ../head_exec head.go
 
-verification:
+verification: dirs
 	cd verification && go build -o ../verification_exec verification.go
 
-worker:
+worker: dirs
 	cd worker && go build -o ../worker_exec worker.go
 
-clean:
+clean: dirs
 	rm -f head_exec verification_exec worker_exec
 
